@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GA-BIA601_HW_S25</title>
+    <style>
+        /* إعادة ضبط جميع العناصر لتوحيد المسافات والأبعاد */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* الإعدادات الأساسية لصفحة الموقع */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4ff;
+            color: #222;
+            min-height: 100vh;
+        }
+
+        /* شريط التنقل العلوي  في أعلى الصفحة */
+        .navbar {
+            background: #fff;
+            border-bottom: 2px solid #dde3ff;
+            padding: 14px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+            /*   navbar اسم التطبيق على اليسار في ال   */
+            .navbar .logo {
+                font-weight: 700;
+                font-size: 18px;
+                color: #4361ee;
+            }
+
+            /*   navbar أزرار التنقل داخل ال    */
+            .navbar nav button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 14px;
+                padding: 7px 16px;
+                border-radius: 8px;
+                margin-left: 6px;
+                transition: background 0.2s;
+            }
+
+                /* تاثير التنقل على الازرار  */
+                .navbar nav button:hover {
+                    background: #eef0ff;
+                }
+
+                /* بيعطي شكل مختلف للزر الشغال حاليا */
+                .navbar nav button.active {
+                    background: #eef0ff;
+                    color: #4361ee;
+                    font-weight: 600;
+                }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page {
+            display: none;
+        }
+ 
+            .page.active {
+                display: block;
+            }
+
+    
+        .home-center {
+            max-width: 520px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+            .home-center h1 {
+                font-size: 32px;
+                font-weight: 800;
+                color: #1a1a2e;
+                margin-bottom: 10px;
+            }
+
+            .home-center p {
+                color: #666;
+                font-size: 15px;
+                margin-bottom: 30px;
+                line-height: 1.6;
+            }
+
+        /* البطاقة البيضة اللي فيها حقل البحث */
+        .search-card {
+            background: #fff;
+            border: 1px solid #dde3ff;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.08);
+        }
+
+            .search-card label {
+                display: block;
+                text-align: left;
+                font-size: 13px;
+                font-weight: 600;
+                color: #444;
+                margin-bottom: 8px;
+            }
+
+            /* حقل إدخال رقم المستخدم */
+            .search-card input {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1.5px solid #ccc;
+                border-radius: 10px;
+                font-size: 15px;
+                outline: none;
+                margin-bottom: 14px;
+                transition: border 0.2s;
+            }
+
+                .search-card input:focus {
+                    border-color: #4361ee;
+                }
+
+        /* زر البحث الأزرق الرئيسي */
+        .btn-main {
+            width: 100%;
+            background: #4361ee;
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-main:hover {
+                background: #3451d1;
+            }
+
+            .btn-main:disabled {
+                background: #a0aec0;
+                cursor: not-allowed;
+            }
+
+        /* رسالة الخطأ لما المستخدم يدخل ايدي غلط */
+        .error-msg {
+            color: #e53e3e;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /*  للاختيار السريع من قائمة المستخدمين */
+        .quick-section {
+            margin-top: 24px;
+            display: none;
+        }
+
+            .quick-section p {
+                font-size: 12px;
+                color: #999;
+                margin-bottom: 10px;
+            }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .chip {
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 5px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+            .chip:hover {
+                border-color: #4361ee;
+                color: #4361ee;
+            }
+
+        /* رأس صفحة النتائج اللي فيه العنوان وبيانات المستخدم */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+            .results-header h2 {
+                font-size: 24px;
+                font-weight: 800;
+            }
+
+            .results-header .user-info {
+                font-size: 13px;
+                color: #777;
+                margin-top: 4px;
+            }
+
+                .results-header .user-info span {
+                    color: #4361ee;
+                    font-weight: 600;
+                }
+
+        /* زر الرجوع للصفحة الرئيسية */
+        .btn-back {
+            background: #fff;
+            border: 1.5px solid #ddd;
+            padding: 8px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+            transition: background 0.2s;
+        }
+
+            .btn-back:hover {
+                background: #f5f5f5;
+            }
+
+        .loading-box {
+            text-align: center;
+            padding: 80px 0;
+            display: none;
+        }
+
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid #eef0ff;
+            border-top: 4px solid #4361ee;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-box p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /*  بطاقات المنتجات المقترحة */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 20px;
+            display: none;
+        }
+
+        /* بطاقة منتج واحد */
+        .product-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: default;
+        }
+
+            /* تأثير رفع البطاقة   */
+            .product-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(67, 97, 238, 0.12);
+            }
+
+            /* إيموجي الفئة فوق البطاقة */
+            .product-card .emoji {
+                font-size: 34px;
+                margin-bottom: 10px;
+            }
+
+            .product-card .cat-label {
+                font-size: 10px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: #4361ee;
+                margin-bottom: 4px;
+            }
+
+            .product-card .prod-name {
+                font-size: 13px;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 8px;
+            }
+
+            /* النجوم لتقييم المنتج */
+            .product-card .stars {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+                margin-bottom: 12px;
+            }
+
+                .product-card .stars .star {
+                    font-size: 13px;
+                }
+
+                    
+                    .product-card .stars .star.on {
+                        color: #f6ad55;
+                    }
+                    
+                    .product-card .stars .star.off {
+                        color: #e2e8f0;
+                    }
+
+                .product-card .stars .rat-num {
+                    font-size: 11px;
+                    color: #aaa;
+                    margin-left: 4px;
+                }
+
+            /* الصف السفلي من البطاقة: السعر + النتيجة */
+            .product-card .bottom-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                border-top: 1px solid #f0f0f0;
+                padding-top: 12px;
+                margin-top: 4px;
+            }
+
+            .product-card .price {
+                font-size: 17px;
+                font-weight: 800;
+                color: #1a1a2e;
+            }
+
+            /* شارة النتيجة من الخوارزمية */
+            .product-card .score-badge {
+                font-size: 11px;
+                font-weight: 700;
+                padding: 3px 9px;
+                border-radius: 8px;
+            }
+
+                /* المنتجات الثلاثة الأولى تأخذ لون أزرق مميز */
+                .product-card .score-badge.top {
+                    background: #e0e7ff;
+                    color: #4361ee;
+                }
+
+                /* باقي المنتجات تأخذ لون رمادي عادي */
+                .product-card .score-badge.normal {
+                    background: #f0f0f0;
+                    color: #888;
+                }
+
+        /*  About */
+        .about-wrap {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+            .about-wrap h2 {
+                font-size: 22px;
+                font-weight: 800;
+                margin-bottom: 24px;
+            }
+
+        
+        .about-box {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 18px;
+        }
+
+            .about-box h3 {
+                font-size: 15px;
+                font-weight: 700;
+                color: #4361ee;
+                margin-bottom: 14px;
+            }
+
+            .about-box p {
+                font-size: 14px;
+                color: #555;
+                line-height: 1.7;
+                margin-bottom: 14px;
+            }
+
+            .about-box ol {
+                padding-left: 18px;
+                font-size: 14px;
+                color: #555;
+                line-height: 2;
+            }
+
+            
+            .about-box table {
+                width: 100%;
+                font-size: 13px;
+                border-collapse: collapse;
+            }
+
+                .about-box table th {
+                    text-align: left;
+                    padding: 8px 0;
+                    border-bottom: 1px solid #eee;
+                    font-weight: 600;
+                    color: #444;
+                }
+
+                .about-box table td {
+                    padding: 8px 0;
+                    border-bottom: 1px solid #f5f5f5;
+                    color: #666;
+                }
+
+        
+        .ref-link {
+            font-size: 13px;
+            color: #4361ee;
+            text-decoration: none;
+        }
+
+            .ref-link:hover {
+                text-decoration: underline;
+            }
+
+        
+        footer {
+            border-top: 1px solid #e2e8f0;
+            margin-top: 60px;
+            padding: 22px;
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="navbar">
+        <div class="logo"> GA-BIA601_HW_S25</div>
+        <nav>
+            
+            <button id="btn-nav-home" class="active" onclick="goTo('home')">Home</button>
+            
+            <button id="btn-nav-about" onclick="goTo('about')">About</button>
+        </nav>
+    </div>
+
+    <div class="container">
+
+        <!-- حقل البحث -->
+        <div id="page-home" class="page active">
+            <div class="home-center">
+                <h1>Product Recommendations</h1>
+                <p>Enter your User ID to get personalized product recommendations using a Genetic Algorithm trained on your shopping behavior.</p>
+
+  
+                <div class="search-card">
+                    <label>User ID</label>
+                    <input id="uid-input" type="number" min="1" placeholder="e.g. 1" />
+                    <!-- زر تشغيل الخوارزمية والحصول على التوصيات -->
+                    <button class="btn-main" id="btn-search" onclick="doSearch()">Get Recommendations</button>
+                    <div class="error-msg" id="err-box"></div>
+                </div>
+
+                <!-- قسم الاختيار السريع من أول 6 مستخدمين -->
+                <div class="quick-section" id="quick-area">
+                    <p>Or pick a user quickly:</p>
+                    <div class="chips" id="chips-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة النتائج: تظهر بعد الحصول على التوصيات -->
+        <div id="page-results" class="page">
+            <div class="loading-box" id="loading-area">
+                <div class="spinner"></div>
+                <p>Running Genetic Algorithm, please wait...</p>
+            </div>
+
+            <div id="results-area">
+                <div class="results-header">
+                    <div>
+                        <h2>Your Recommendations</h2>
+                        <div class="user-info">
+                            User ID: <span id="show-uid"></span> &nbsp;·&nbsp; Location: <span id="show-loc"></span>
+                        </div>
+                    </div>
+                    <button class="btn-back" onclick="goTo('home')">← Back</button>
+                </div>
+
+                <!-- الشبكة اللي تحتوي بطاقات المنتجات المقترحة -->
+                <div class="cards-grid" id="cards-area"></div>
+            </div>
+
+        </div>
+
+        <div id="page-about" class="page">
+            <div class="about-wrap">
+                <h2>About the GA Engine</h2>
+
+                <!-- شرح خطوات الخوارزمية الجينية -->
+                <div class="about-box">
+                    <h3>How the Genetic Algorithm Works</h3>
+                    <p>
+                        Each possible recommendation list is treated as a <strong>chromosome</strong>, where each product ID is a gene.
+                        The algorithm evolves a population of these chromosomes over many generations to find the best product set for each user.
+                    </p>
+
+                    <ol>
+                        <li><strong>Initial Population</strong> - random product sets</li>
+                        <li><strong>Fitness Function</strong> - scored from user views, clicks, purchases, and ratings</li>
+                        <li><strong>Tournament Selection</strong> - best individuals are chosen as parents</li>
+                        <li><strong>One-Point Crossover</strong> - parent chromosomes combine to form new child</li>
+                        <li><strong>Swap Mutation</strong> - two genes randomly swap to keep diversity</li>
+                        <li><strong>Elitism</strong> - top chromosomes pass directly to next generation</li>
+                    </ol>
+                </div>
+
+
+                <div class="about-box">
+                    <h3>Fitness Score Weights</h3>
+                    <table>
+                        <tr><th>Action</th><th>Score</th></tr>
+                        <tr><td>Viewed product</td><td>0.2</td></tr>
+                        <tr><td>Clicked product</td><td>0.5</td></tr>
+                        <tr><td>Purchased product</td><td>1.0</td></tr>
+                        <tr><td>User rating (scale 1–5) × 1.5 / 5</td><td>up to 1.5</td></tr>
+                    </table>
+                </div>
+
+
+                <div class="about-box">
+                    <h3>Reference Paper</h3>
+                    <a class="ref-link"
+                       href="https://doi.org/10.1007/s44163-025-00678-y"
+                       target="_blank">
+                        Al Sabri, M., Zubair, S., &amp; Alnuhait, H. (2026). Improved prediction on recommendation
+                        system by creating a new model that employs Mahout collaborative filtering with
+                        content-based filtering based on genetic algorithm methods.
+                        <em>Discover Artificial Intelligence</em>, 6, 20.
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <footer>
+        &copy; majd_239909 &nbsp;·&nbsp; mohamad_osama_254458 &nbsp;·&nbsp;
+        saad_al_den_244836 &nbsp;·&nbsp; aisha_211627 &nbsp;·&nbsp; ayah_234810
+    </footer>
+
+    <script>
+        // backend server اللي نرسل إليه الطلبات
+        const SERVER = "http://127.0.0.1:8000";
+
+        const EMOJIS = {
+            "Toys": "🧸",
+            "Clothes": "👕",
+            "Perfumes": "🌸",
+            "Sports": "⚽",
+            "Home Appliances": "🏠",
+            "Books": "📚",
+            "Electronics": "💻",
+        };
+
+        function goTo(name) {
+
+            document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+
+            document.getElementById("page-" + name).classList.add("active");
+
+
+            ["home", "about"].forEach(n => {
+                var btn = document.getElementById("btn-nav-" + n);
+                if (!btn) return;
+                btn.classList.toggle("active", n === name);
+            });
+
+
+            window.scrollTo({ top: 0 });
+        }
+
+        // عرض اول 6 مستخدمين
+        async function loadUsers() {
+            try {
+
+                var res = await fetch(SERVER + "/users");
+                var data = await res.json();
+                var container = document.getElementById("chips-container");
+
+
+                data.users.slice(0, 6).forEach(function (u) {
+                    var chip = document.createElement("button");
+                    chip.className = "chip";
+                    chip.innerText = "User " + u.user_id + " — " + u.location;
+
+                    chip.onclick = function () {
+                        document.getElementById("uid-input").value = u.user_id;
+                        doSearch();
+                    };
+                    container.appendChild(chip);
+                });
+
+                document.getElementById("quick-area").style.display = "block";
+            } catch (e) {
+
+            }
+        }
+
+        // بتاخد الايدي وبتطلب التوصيات من الباك اند
+        async function doSearch() {
+            var uid = document.getElementById("uid-input").value.trim();
+            var errBox = document.getElementById("err-box");
+            var btn = document.getElementById("btn-search");
+
+ 
+            if (!uid || isNaN(uid) || parseInt(uid) < 1) {
+                errBox.style.display = "block";
+                errBox.innerText = "Please enter a valid User ID.";
+                return;
+            }
+            errBox.style.display = "none";
+
+
+            goTo("results");
+            document.getElementById("loading-area").style.display = "block";
+            document.getElementById("cards-area").style.display = "none";
+
+            btn.disabled = true;
+            btn.innerText = "Loading...";
+
+            try {
+
+                var res = await fetch(SERVER + "/recommend?user_id=" + uid);
+                if (!res.ok) {
+                    var errData = await res.json();
+                    throw new Error(errData.detail || "server error");
+                }
+                var data = await res.json();
+                // نمرر البيانات لدالة العرض
+                showCards(data);
+            } catch (e) {
+                // لو في خطأ نعرض رسالة  
+                document.getElementById("loading-area").style.display = "none";
+                document.getElementById("cards-area").style.display = "grid";
+                document.getElementById("cards-area").innerHTML =
+                    '<p style="grid-column:1/-1;text-align:center;color:#e53e3e;padding:60px 0">⚠️ ' + e.message + '</p>';
+            } finally {
+
+                btn.disabled = false;
+                btn.innerText = "Get Recommendations";
+            }
+        }
+
+        // دالة عرض بطاقات المنتجات بعد استلام البيانات  
+        function showCards(data) {
+
+            document.getElementById("loading-area").style.display = "none";
+            document.getElementById("cards-area").style.display = "grid";
+
+
+            document.getElementById("show-uid").innerText = data.user_id;
+            document.getElementById("show-loc").innerText = data.user_location;
+
+            var grid = document.getElementById("cards-area");
+            grid.innerHTML = "";
+
+            // لو ما في توصيات نعرض رسالة فارغة
+            if (!data.recommendations || data.recommendations.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#aaa;padding:60px 0">No recommendations found.</p>';
+                return;
+            }
+
+            //  بطاقة لكل منتج مقترح
+            data.recommendations.forEach(function (item, idx) {
+
+                var icon = EMOJIS[item.category] || "📦";
+                var isTop = idx < 3;
+                var pct = (item.score * 100).toFixed(1);
+                var stars = makeStars(item.rating);
+
+                var card = document.createElement("div");
+                card.className = "product-card";
+
+
+                card.innerHTML =
+                    '<div class="emoji">' + icon + '</div>' +
+                    '<div class="cat-label">' + item.category + '</div>' +
+                    '<div class="prod-name">Product #' + item.product_id + '</div>' +
+                    '<div class="stars">' + stars + '<span class="rat-num">' + item.rating + '</span></div>' +
+                    '<div class="bottom-row">' +
+                    '<span class="price">' + item.price + '</span>' +
+                    '<span class="score-badge ' + (isTop ? 'top' : 'normal') + '">' + pct + '%</span>' +
+                    '</div>';
+
+                grid.appendChild(card);
+            });
+        }
+
+        function makeStars(rating) {
+            var filled = Math.round(rating || 0);
+            var html = "";
+            for (var i = 0; i < 5; i++) {
+
+                html += '<span class="star ' + (i < filled ? 'on' : 'off') + '">★</span>';
+            }
+            return html;
+        }
+
+
+        document.getElementById("uid-input").onkeydown = function (e) {
+            if (e.key === "Enter") doSearch();
+        };
+
+        loadUsers();
+    </script>
+</body>
+</html>
